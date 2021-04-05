@@ -1,28 +1,52 @@
-
+import urllib.request
 import os
-import glob
+import sys
 import numpy as np
 from tensorflow.keras import layers
 from tensorflow import keras
 import tensorflow as tf
 import matplotlib.pyplot as plt
+
+download = False
+
+
 modelfilename="model1"
 image_size=28
 num_classes=100
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
 config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraft carrier","airplane","alarm clock","ambulance","angel","animal migration","ant","anvil","apple","arm","asparagus","axe","backpack","banana","bandage","barn","baseball bat","baseball","basket","basketball","bat","bathtub","beach","bear","beard","bed","bee","belt","bench","bicycle","binoculars","bird","birthday cake","blackberry","blueberry","book","boomerang","bottlecap","bowtie","bracelet","brain","bread","bridge","broccoli","broom","bucket","bulldozer","bus","bush","butterfly","cactus","cake","calculator","calendar","camel","camera","camouflage","campfire","candle","cannon","canoe","car","carrot","castle","cat","ceiling fan","cell phone","cello","chair","chandelier","church","circle","clarinet","clock","cloud","coffee cup","compass","computer","cookie","cooler","couch","cow","crab","crayon","crocodile","crown","cruise ship","cup","diamond","dishwasher","diving board","dog","dolphin","donut","door","dragon","dresser"]
+
+base = 'https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/'
+
+
+
+
 
 def load_data(root, vfold_ratio=0.5, max_items_per_class= 5000 ):
-    all_files = glob.glob(os.path.join(root, '*.npy'))
+
 
     #initialize variables
+    global download
     x = np.empty([0, 784])
     y = np.empty([0])
-    class_names = []
+
 
     #load a subset of the data to memory
-    for idx, file in enumerate(all_files):
+    for idx,i in enumerate(labellist):
+        file=root+"/"+i+".npy"
+        if(os.path.exists(file) == False):
+
+            if not download:
+             shoulddownload = input("Some training files doesnt exist do you want to download them? (y/n)")
+             if(shoulddownload.lower()=="y"):
+               download=True
+             elif(shoulddownload.lower()=="n"):
+                sys.exit("You canceled the training dataset download")
+            print("Downloading: "+base + i.replace(" ", "%20"))
+            urllib.request.urlretrieve(base + i.replace(" ", "%20") + '.npy', root+"/" + i + '.npy')
+
         data = np.load(file)
         data = data[0: max_items_per_class, :]
         labels = np.full(data.shape[0], idx)
@@ -30,11 +54,7 @@ def load_data(root, vfold_ratio=0.5, max_items_per_class= 5000 ):
         x = np.concatenate((x, data), axis=0)
         y = np.append(y, labels)
 
-        class_name, ext = os.path.splitext(os.path.basename(file))
-        class_names.append(class_name)
 
-    data = None
-    labels = None
 
     #separate into training and testing
     permutation = np.random.permutation(y.shape[0])
@@ -46,10 +66,13 @@ def load_data(root, vfold_ratio=0.5, max_items_per_class= 5000 ):
 
     x_train = x[vfold_size:x.shape[0], :]
     y_train = y[vfold_size:y.shape[0]]
-    return x_train, y_train, x_test, y_test, class_names
+    return x_train, y_train, x_test, y_test
 
 
-x_train, y_train, x_test, y_test, class_names= load_data("data")
+x_train, y_train, x_test, y_test= load_data("data")
+if(download==True):
+    print("Download complete")
+
 
 x_train = x_train.reshape(x_train.shape[0], image_size, image_size,1).astype('float32')
 x_test = x_test.reshape(x_test.shape[0], image_size, image_size,1).astype('float32')
@@ -67,6 +90,8 @@ model.add(layers.Convolution2D(32, (3, 3), padding='same', activation= 'relu'))
 model.add(layers.MaxPooling2D(pool_size=(2, 2)))
 model.add(layers.Convolution2D(64, (3, 3), padding='same', activation= 'relu'))
 model.add(layers.MaxPooling2D(pool_size =(2,2)))
+model.add(layers.Convolution2D(128, (3, 3), padding='same', activation= 'relu'))
+model.add(layers.MaxPooling2D(pool_size =(2,2)))
 model.add(layers.Flatten())
 model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(100, activation='softmax'))
@@ -76,7 +101,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'],)
 
 #fit the model
-model.fit(x_train, y_train, validation_split=0.1, batch_size = 512, verbose=2, epochs=5)
+model.fit(x_train, y_train, validation_split=0.1, batch_size = 128, verbose=2, epochs=5)
 tf.saved_model.save(model, "saved models/"+modelfilename)
 #evaluate on unseen data
 score = model.evaluate(x_test, y_test, verbose=0)
@@ -90,4 +115,4 @@ for i in range(32):
  plt.grid(False)
  plt.show()
 
- print(class_names[np.argmax(predictions[i])])
+ print(labellist[np.argmax(predictions[i])])

@@ -42,20 +42,29 @@ class Paint(object):
         self.c.bind('<B1-Motion>', self.paint)
         self.c.bind('<ButtonRelease-1>', self.reset)
     def save(self):
+
         self.c.postscript(file="drawnimage.eps")
         img = Image.open("drawnimage.eps")
         img=img.resize((28,28))
         img=PIL.ImageOps.invert(img)
-        img.save("drawnimage.png", "PNG")
-
-        img = plt.imread("drawnimage.png")
-
-        img.resize(28,28,1)
-
+        img=img.convert('L')
+        imgA=np.asarray(img)
+        imgA=imgA.reshape(28,28,1).astype('float32')
+        imgA/=255.0
 
 
 
-        print(labellist[np.argmax(model.predict(img[None,:,:]))])
+        arr = model.predict(imgA[None,:,:,:])[0]
+        indices =  arr.argsort()[-3:][::-1]
+        for i in indices:
+            print(labellist[i],end=",")
+        print("----------")
+        plt.figure()
+        plt.imshow(imgA)
+        plt.colorbar()
+        plt.gray()
+        plt.grid(False)
+        plt.show()
 
 
 
@@ -73,7 +82,7 @@ class Paint(object):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
-        self.line_width = 20
+        self.line_width = 40
         paint_color = 'white' if self.eraser_on else self.color
         if self.old_x and self.old_y:
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
