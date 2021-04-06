@@ -5,6 +5,7 @@ import numpy as np
 from PIL import EpsImagePlugin
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import threading
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
 config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -24,13 +25,16 @@ class Paint(object):
 
 
         self.eraser_button = Button(self.root, text='erase', command=self.use_eraser ,height = 2, width = 30)
-        self.save_button = Button(self.root, text='save', command=self.save, height=2, width=30)
+        self.save_button = Button(self.root,text="save", command=self.save, height=2, width=30)
         self.save_button.grid(row=0, column=1)
         self.eraser_button.grid(row=0, column=2)
+        self.label1= Label(self.root,text="",bg="white",height=5,width=60,font=("Courier", 20))
+        self.label1.grid(row=4,columnspan=5)
+
 
 
         self.c = Canvas(self.root, bg='white', width=840, height=840)
-        self.c.grid(row=1, columnspan=5)
+        self.c.grid(row=2, columnspan=5)
 
         self.setup()
         self.root.mainloop()
@@ -57,20 +61,22 @@ class Paint(object):
 
         arr = model.predict(imgA[None,:,:,:])[0]
         indices =  arr.argsort()[-3:][::-1]
+        self.label1.configure(text=labellist[indices[0]])
         for i in indices:
             print(labellist[i],end=",")
         print("----------")
-        plt.figure()
-        plt.imshow(imgA)
-        plt.colorbar()
-        plt.gray()
-        plt.grid(False)
-        plt.show()
+       # plt.figure()
+       # plt.imshow(imgA)
+       # plt.colorbar()
+       # plt.gray()
+       # plt.grid(False)
+       # plt.show()
 
 
 
     def use_brush(self):
         self.activate_button(self.brush_button)
+
 
 
     def use_eraser(self):
@@ -94,6 +100,7 @@ class Paint(object):
 
     def reset(self, event):
         self.old_x, self.old_y = None, None
+        threading.Thread(target=self.save())
 
 
 if __name__ == '__main__':
