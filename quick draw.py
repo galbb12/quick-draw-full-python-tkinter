@@ -9,8 +9,8 @@ import tensorflow as tf
 import threading
 oldtext=""
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
-assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+if len(physical_devices)>0:
+ config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 EpsImagePlugin.gs_windows_binary =  r'bin\gswin64c'
 
 
