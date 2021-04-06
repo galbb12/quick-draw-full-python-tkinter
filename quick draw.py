@@ -4,12 +4,13 @@ from PIL import Image
 import numpy as np
 from PIL import EpsImagePlugin
 import tensorflow as tf
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import threading
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
 config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 EpsImagePlugin.gs_windows_binary =  r'bin\gswin64c'
+
 modelfilename="model1"
 labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraft carrier","airplane","alarm clock","ambulance","angel","animal migration","ant","anvil","apple","arm","asparagus","axe","backpack","banana","bandage","barn","baseball bat","baseball","basket","basketball","bat","bathtub","beach","bear","beard","bed","bee","belt","bench","bicycle","binoculars","bird","birthday cake","blackberry","blueberry","book","boomerang","bottlecap","bowtie","bracelet","brain","bread","bridge","broccoli","broom","bucket","bulldozer","bus","bush","butterfly","cactus","cake","calculator","calendar","camel","camera","camouflage","campfire","candle","cannon","canoe","car","carrot","castle","cat","ceiling fan","cell phone","cello","chair","chandelier","church","circle","clarinet","clock","cloud","coffee cup","compass","computer","cookie","cooler","couch","cow","crab","crayon","crocodile","crown","cruise ship","cup","diamond","dishwasher","diving board","dog","dolphin","donut","door","dragon","dresser"]
 model = tf.keras.models.load_model("saved models/"+modelfilename)
@@ -19,6 +20,7 @@ class Paint(object):
 
 
     def __init__(self):
+
         self.root = Tk()
 
 
@@ -35,9 +37,12 @@ class Paint(object):
 
         self.c = Canvas(self.root, bg='white', width=840, height=840)
         self.c.grid(row=2, columnspan=5)
+        threading.Thread(target=lambda : self.save()).start()
 
         self.setup()
         self.root.mainloop()
+
+
 
     def setup(self):
         self.old_x = None
@@ -65,12 +70,14 @@ class Paint(object):
         for i in indices:
             print(labellist[i],end=",")
         print("----------")
+
        # plt.figure()
        # plt.imshow(imgA)
        # plt.colorbar()
        # plt.gray()
        # plt.grid(False)
        # plt.show()
+        threading.Timer(0.75, lambda: self.save()).start()
 
 
 
@@ -98,9 +105,17 @@ class Paint(object):
         self.old_x = event.x
         self.old_y = event.y
 
+
     def reset(self, event):
         self.old_x, self.old_y = None, None
-        threading.Thread(target=self.save())
+        #threading.Thread(target=self.save()).start()
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
