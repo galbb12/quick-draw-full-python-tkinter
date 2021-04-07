@@ -27,6 +27,7 @@ class Paint(object):
     def __init__(self):
 
         self.root = Tk()
+        self.root.tk.call('tk', 'scaling', 1.0)
 
 
 
