@@ -29,7 +29,7 @@ class Paint(object):
         global scale
 
         self.root = Tk()
-        scale=self.root.winfo_fpixels('1i')/65
+        scale=self.root.winfo_fpixels('1i')/100
         print(scale)
 
 
