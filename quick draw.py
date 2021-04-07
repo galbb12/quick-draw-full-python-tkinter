@@ -27,7 +27,7 @@ class Paint(object):
     def __init__(self):
 
         self.root = Tk()
-        self.root.tk.call('tk', 'scaling', 1.0)
+
 
 
 
@@ -41,7 +41,7 @@ class Paint(object):
 
 
 
-        self.c = Canvas(self.root, bg='white', width=840, height=840)
+        self.c = Canvas(self.root, bg='white', width=650, height=650)
         self.c.grid(row=2, columnspan=5)
 
         threading.Thread(target=lambda : self.save()).start()
@@ -118,7 +118,7 @@ class Paint(object):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
-        self.line_width = 40
+        self.line_width = 25
         paint_color = 'white' if self.eraser_on else self.color
         if self.old_x and self.old_y:
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
