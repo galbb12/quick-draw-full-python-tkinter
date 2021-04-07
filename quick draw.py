@@ -19,6 +19,7 @@ labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraf
 model = tf.keras.models.load_model("saved models/"+modelfilename)
 
 engine = pyttsx3.init()
+scale=0
 class Paint(object):
 
 
@@ -28,6 +29,8 @@ class Paint(object):
 
         self.root = Tk()
         self.root.tk.call('tk', 'scaling', 1.0)
+        print(self.root.winfo_fpixels('1i'))
+        scale=self.root.winfo_fpixels('1i')/60
 
 
 
@@ -36,13 +39,14 @@ class Paint(object):
         self.save_button = Button(self.root,text="save", command=self.save, height=2, width=30)
         self.save_button.grid(row=0, column=1)
         self.eraser_button.grid(row=0, column=2)
-        self.label1= Label(self.root,text="",bg="white",height=1,width=60,font=("Courier", 20))
-        self.label1.grid(row=4,columnspan=5)
 
 
 
-        self.c = Canvas(self.root, bg='white', width=650, height=650)
+
+        self.c = Canvas(self.root, bg='white', width=1000/scale, height=1000/scale)
         self.c.grid(row=2, columnspan=5)
+        self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
+        self.label1.grid(row=4, columnspan=5)
 
         threading.Thread(target=lambda : self.save()).start()
 
