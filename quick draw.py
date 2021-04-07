@@ -19,7 +19,7 @@ labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraf
 model = tf.keras.models.load_model("saved models/"+modelfilename)
 
 engine = pyttsx3.init()
-
+scale = 0
 class Paint(object):
 
 
@@ -28,8 +28,11 @@ class Paint(object):
     def __init__(self):
         global scale
 
+
+
         self.root = Tk()
-        self.root.geometry("800x800")
+        scale =1920/ self.root.winfo_screenwidth()
+        print(scale)
 
 
 
@@ -44,7 +47,7 @@ class Paint(object):
 
 
 
-        self.c = Canvas(self.root, bg='white', width=550, height=550)
+        self.c = Canvas(self.root, bg='white', width=800/scale, height=800/scale)
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
         self.label1.grid(row=4, columnspan=5)
