@@ -36,13 +36,14 @@ class Paint(object):
         self.save_button = Button(self.root,text="save", command=self.save, height=2, width=30)
         self.save_button.grid(row=0, column=1)
         self.eraser_button.grid(row=0, column=2)
-        self.label1= Label(self.root,text="",bg="white",height=5,width=60,font=("Courier", 20))
+        self.label1= Label(self.root,text="",bg="white",height=1,width=60,font=("Courier", 20))
         self.label1.grid(row=4,columnspan=5)
 
 
 
         self.c = Canvas(self.root, bg='white', width=840, height=840)
         self.c.grid(row=2, columnspan=5)
+
         threading.Thread(target=lambda : self.save()).start()
 
         self.setup()
