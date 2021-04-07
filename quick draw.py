@@ -19,7 +19,7 @@ labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraf
 model = tf.keras.models.load_model("saved models/"+modelfilename)
 
 engine = pyttsx3.init()
-scale=0
+
 class Paint(object):
 
 
@@ -29,8 +29,9 @@ class Paint(object):
         global scale
 
         self.root = Tk()
-        scale=self.root.winfo_fpixels('1i')/100
-        print(scale)
+        self.root.geometry("800x800")
+
+
 
 
 
@@ -43,7 +44,7 @@ class Paint(object):
 
 
 
-        self.c = Canvas(self.root, bg='white', width=500*scale, height=500*scale)
+        self.c = Canvas(self.root, bg='white', width=550, height=550)
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
         self.label1.grid(row=4, columnspan=5)
@@ -122,7 +123,7 @@ class Paint(object):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
-        self.line_width = int(30*scale)
+        self.line_width = 30
         paint_color = 'white' if self.eraser_on else self.color
         if self.old_x and self.old_y:
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
