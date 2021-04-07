@@ -66,9 +66,13 @@ class Paint(object):
 
         arr = model.predict(imgA[None,:,:,:])[0]
         indices =  arr.argsort()[-3:][::-1]
-        self.label1.configure(text=labellist[indices[0]])
+        if(arr[indices[0]]>0.25):
+
+         self.label1.configure(text=labellist[indices[0]])
+        else:
+            self.label1.configure(text="")
         for i in indices:
-            print(labellist[i],end=",")
+            print(labellist[i] ,str(int(arr[i]*100))+"%",end=",")
         print("----------")
 
        # plt.figure()
