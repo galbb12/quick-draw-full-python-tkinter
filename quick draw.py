@@ -39,6 +39,7 @@ class Paint(object):
 
 
 
+
         self.eraser_button = Button(self.root, text='erase', command=self.use_eraser ,height = 2, width = 30)
         self.save_button = Button(self.root,text="save", command=self.save, height=2, width=30)
         self.save_button.grid(row=0, column=1)
@@ -47,7 +48,7 @@ class Paint(object):
 
 
 
-        self.c = Canvas(self.root, bg='white', width=800/scale, height=800/scale)
+        self.c = Canvas(self.root, bg='white', width=840/scale, height=840/scale)
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
         self.label1.grid(row=4, columnspan=5)
@@ -126,7 +127,7 @@ class Paint(object):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
-        self.line_width = 30
+        self.line_width = 40/scale
         paint_color = 'white' if self.eraser_on else self.color
         if self.old_x and self.old_y:
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
