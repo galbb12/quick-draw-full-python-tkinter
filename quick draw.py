@@ -26,11 +26,11 @@ class Paint(object):
 
 
     def __init__(self):
+        global scale
 
         self.root = Tk()
-        self.root.tk.call('tk', 'scaling', 1.0)
-        print(self.root.winfo_fpixels('1i'))
-        scale=self.root.winfo_fpixels('1i')/60
+        scale=self.root.winfo_fpixels('1i')/65
+        print(scale)
 
 
 
@@ -43,7 +43,7 @@ class Paint(object):
 
 
 
-        self.c = Canvas(self.root, bg='white', width=1000/scale, height=1000/scale)
+        self.c = Canvas(self.root, bg='white', width=500*scale, height=500*scale)
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
         self.label1.grid(row=4, columnspan=5)
@@ -103,7 +103,7 @@ class Paint(object):
        # plt.gray()
        # plt.grid(False)
        # plt.show()
-        threading.Timer(0.75, lambda: self.save()).start()
+        threading.Timer(0.5, lambda: self.save()).start()
 
 
 
@@ -122,7 +122,7 @@ class Paint(object):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
-        self.line_width = 25
+        self.line_width = int(30*scale)
         paint_color = 'white' if self.eraser_on else self.color
         if self.old_x and self.old_y:
             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
