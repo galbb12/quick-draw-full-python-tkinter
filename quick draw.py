@@ -7,18 +7,19 @@ from PIL import EpsImagePlugin
 import tensorflow as tf
 #import matplotlib.pyplot as plt
 import threading
+import random
+import time
 oldtext=""
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices)>0:
  config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 EpsImagePlugin.gs_windows_binary =  r'bin\gswin64c'
 
-
 modelfilename="modelallwords"
 labellist=["The Eiffel Tower" ,"The Great Wall of China" ,"The Mona Lisa" ,"aircraft carrier" ,"airplane" ,"alarm clock" ,"ambulance" ,"angel" ,"animal migration" ,"ant" ,"anvil" ,"apple" ,"arm" ,"asparagus" ,"axe" ,"backpack" ,"banana" ,"bandage" ,"barn" ,"baseball bat" ,"baseball" ,"basket" ,"basketball" ,"bat" ,"bathtub" ,"beach" ,"bear" ,"beard" ,"bed" ,"bee" ,"belt" ,"bench" ,"bicycle" ,"binoculars" ,"bird" ,"birthday cake" ,"blackberry" ,"blueberry" ,"book" ,"boomerang" ,"bottlecap" ,"bowtie" ,"bracelet" ,"brain" ,"bread" ,"bridge" ,"broccoli" ,"broom" ,"bucket" ,"bulldozer" ,"bus" ,"bush" ,"butterfly" ,"cactus" ,"cake" ,"calculator" ,"calendar" ,"camel" ,"camera" ,"camouflage" ,"campfire" ,"candle" ,"cannon" ,"canoe" ,"car" ,"carrot" ,"castle" ,"cat" ,"ceiling fan" ,"cell phone" ,"cello" ,"chair" ,"chandelier" ,"church" ,"circle" ,"clarinet" ,"clock" ,"cloud" ,"coffee cup" ,"compass" ,"computer" ,"cookie" ,"cooler" ,"couch" ,"cow" ,"crab" ,"crayon" ,"crocodile" ,"crown" ,"cruise ship" ,"cup" ,"diamond" ,"dishwasher" ,"diving board" ,"dog" ,"dolphin" ,"donut" ,"door" ,"dragon" ,"dresser" ,"drill" ,"drums" ,"duck" ,"dumbbell" ,"ear" ,"elbow" ,"elephant" ,"envelope" ,"eraser" ,"eye" ,"eyeglasses" ,"face" ,"fan" ,"feather" ,"fence" ,"finger" ,"fire hydrant" ,"fireplace" ,"firetruck" ,"fish" ,"flamingo" ,"flashlight" ,"flip flops" ,"floor lamp" ,"flower" ,"flying saucer" ,"foot" ,"fork" ,"frog" ,"frying pan" ,"garden hose" ,"garden" ,"giraffe" ,"goatee" ,"golf club" ,"grapes" ,"grass" ,"guitar" ,"hamburger" ,"hammer" ,"hand" ,"harp" ,"hat" ,"headphones" ,"hedgehog" ,"helicopter" ,"helmet" ,"hexagon" ,"hockey puck" ,"hockey stick" ,"horse" ,"hospital" ,"hot air balloon" ,"hot dog" ,"hot tub" ,"hourglass" ,"house plant" ,"house" ,"hurricane" ,"ice cream" ,"jacket" ,"jail" ,"kangaroo" ,"key" ,"keyboard" ,"knee" ,"knife" ,"ladder" ,"lantern" ,"laptop" ,"leaf" ,"leg" ,"light bulb" ,"lighter" ,"lighthouse" ,"lightning" ,"line" ,"lion" ,"lipstick" ,"lobster" ,"lollipop" ,"mailbox" ,"map" ,"marker" ,"matches" ,"megaphone" ,"mermaid" ,"microphone" ,"microwave" ,"monkey" ,"moon" ,"mosquito" ,"motorbike" ,"mountain" ,"mouse" ,"moustache" ,"mouth" ,"mug" ,"mushroom" ,"nail" ,"necklace" ,"nose" ,"ocean" ,"octagon" ,"octopus" ,"onion" ,"oven" ,"owl" ,"paint can" ,"paintbrush" ,"palm tree" ,"panda" ,"pants" ,"paper clip" ,"parachute" ,"parrot" ,"passport" ,"peanut" ,"pear" ,"peas" ,"pencil" ,"penguin" ,"piano" ,"pickup truck" ,"picture frame" ,"pig" ,"pillow" ,"pineapple" ,"pizza" ,"pliers" ,"police car" ,"pond" ,"pool" ,"popsicle" ,"postcard" ,"potato" ,"power outlet" ,"purse" ,"rabbit" ,"raccoon" ,"radio" ,"rain" ,"rainbow" ,"rake" ,"remote control" ,"rhinoceros" ,"rifle" ,"river" ,"roller coaster" ,"rollerskates" ,"sailboat" ,"sandwich" ,"saw" ,"saxophone" ,"school bus" ,"scissors" ,"scorpion" ,"screwdriver" ,"sea turtle" ,"see saw" ,"shark" ,"sheep" ,"shoe" ,"shorts" ,"shovel" ,"sink" ,"skateboard" ,"skull" ,"skyscraper" ,"sleeping bag" ,"smiley face" ,"snail" ,"snake" ,"snorkel" ,"snowflake" ,"snowman" ,"soccer ball" ,"sock" ,"speedboat" ,"spider" ,"spoon" ,"spreadsheet" ,"square" ,"squiggle" ,"squirrel" ,"stairs" ,"star" ,"steak" ,"stereo" ,"stethoscope" ,"stitches" ,"stop sign" ,"stove" ,"strawberry" ,"streetlight" ,"string bean" ,"submarine" ,"suitcase" ,"sun" ,"swan" ,"sweater" ,"swing set" ,"sword" ,"syringe" ,"t-shirt" ,"table" ,"teapot" ,"teddy-bear" ,"telephone" ,"television" ,"tennis racquet" ,"tent" ,"tiger" ,"toaster" ,"toe" ,"toilet" ,"tooth" ,"toothbrush" ,"toothpaste" ,"tornado" ,"tractor" ,"traffic light" ,"train" ,"tree" ,"triangle" ,"trombone" ,"truck" ,"trumpet" ,"umbrella" ,"underwear" ,"van" ,"vase" ,"violin" ,"washing machine" ,"watermelon" ,"waterslide" ,"whale" ,"wheel" ,"windmill" ,"wine bottle" ,"wine glass" ,"wristwatch" ,"yoga" ,"zebra" ,"zigzag" ]
 print(len(labellist))
 model = tf.keras.models.load_model("saved models/"+modelfilename)
-
+randomword=""
 engine = pyttsx3.init()
 scale = 0
 class Paint(object):
@@ -42,9 +43,12 @@ class Paint(object):
 
 
         self.eraser_button = Button(self.root, text='erase', command=self.use_eraser ,height = 2, width = 30)
-        self.save_button = Button(self.root,text="save", command=self.save, height=2, width=30)
-        self.save_button.grid(row=0, column=1)
-        self.eraser_button.grid(row=0, column=2)
+
+        self.eraser_button.grid(row=0, column=1)
+
+        self.skip_button = Button(self.root, text='skip', command=self.pickword ,height = 2, width = 30)
+
+        self.skip_button.grid(row=0, column=3)
 
 
 
@@ -53,6 +57,8 @@ class Paint(object):
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
         self.label1.grid(row=4, columnspan=5)
+        self.label2 = Label(self.root, text="", bg="white", height=1, width=25, font=("Courier", 15),anchor="w")
+        self.label2.grid(row=0, column=2)
 
         threading.Thread(target=lambda : self.save()).start()
 
@@ -68,8 +74,15 @@ class Paint(object):
         self.eraser_on = False
         self.c.bind('<B1-Motion>', self.paint)
         self.c.bind('<ButtonRelease-1>', self.reset)
+        self.pickword()
+    def pickword(self):
+        global randomword
+        randomword=labellist[random.randint(0,len(labellist))]
+        self.label2.configure(text="Draw: "+randomword)
+        self.use_eraser()
     def save(self):
         global oldtext
+        won=False
         self.c.postscript(file="drawnimage.eps")
         img = Image.open("drawnimage.eps")
         img=img.resize((28,28))
@@ -83,8 +96,15 @@ class Paint(object):
 
         arr = model.predict(imgA[None,:,:,:])[0]
         indices =  arr.argsort()[-3:][::-1]
+        predictionlist=[]
+        for i in indices:
+           predictionlist.append(labellist[i])
+
         text=""
-        if(arr[indices[0]]>0.10):
+        if(randomword in predictionlist):
+           text="Oh i know it's "+randomword
+           won=True
+        elif(arr[indices[0]]>0.10):
          for i in range(2):
              if(arr[indices[i]]>0.10):
                  if(i==0):
@@ -109,6 +129,10 @@ class Paint(object):
             engine.say(text.replace(","," or "))
             engine.runAndWait()
             oldtext=text
+        if (randomword in predictionlist):
+            time.sleep(2)
+            self.pickword()
+            time.sleep(2)
 
 
        # plt.figure()
@@ -117,6 +141,7 @@ class Paint(object):
        # plt.gray()
        # plt.grid(False)
        # plt.show()
+
         threading.Timer(0.25, lambda: self.save()).start()
 
 
