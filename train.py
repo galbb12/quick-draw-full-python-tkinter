@@ -10,14 +10,14 @@ import matplotlib.pyplot as plt
 download = False
 
 
-modelfilename="model1"
+modelfilename="modelallwords"
 image_size=28
 num_classes=100
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
 config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
-labellist=["The Eiffel Tower","The Great Wall of China","The Mona Lisa","aircraft carrier","airplane","alarm clock","ambulance","angel","animal migration","ant","anvil","apple","arm","asparagus","axe","backpack","banana","bandage","barn","baseball bat","baseball","basket","basketball","bat","bathtub","beach","bear","beard","bed","bee","belt","bench","bicycle","binoculars","bird","birthday cake","blackberry","blueberry","book","boomerang","bottlecap","bowtie","bracelet","brain","bread","bridge","broccoli","broom","bucket","bulldozer","bus","bush","butterfly","cactus","cake","calculator","calendar","camel","camera","camouflage","campfire","candle","cannon","canoe","car","carrot","castle","cat","ceiling fan","cell phone","cello","chair","chandelier","church","circle","clarinet","clock","cloud","coffee cup","compass","computer","cookie","cooler","couch","cow","crab","crayon","crocodile","crown","cruise ship","cup","diamond","dishwasher","diving board","dog","dolphin","donut","door","dragon","dresser"]
-
+labellist=["The Eiffel Tower" ,"The Great Wall of China" ,"The Mona Lisa" ,"aircraft carrier" ,"airplane" ,"alarm clock" ,"ambulance" ,"angel" ,"animal migration" ,"ant" ,"anvil" ,"apple" ,"arm" ,"asparagus" ,"axe" ,"backpack" ,"banana" ,"bandage" ,"barn" ,"baseball bat" ,"baseball" ,"basket" ,"basketball" ,"bat" ,"bathtub" ,"beach" ,"bear" ,"beard" ,"bed" ,"bee" ,"belt" ,"bench" ,"bicycle" ,"binoculars" ,"bird" ,"birthday cake" ,"blackberry" ,"blueberry" ,"book" ,"boomerang" ,"bottlecap" ,"bowtie" ,"bracelet" ,"brain" ,"bread" ,"bridge" ,"broccoli" ,"broom" ,"bucket" ,"bulldozer" ,"bus" ,"bush" ,"butterfly" ,"cactus" ,"cake" ,"calculator" ,"calendar" ,"camel" ,"camera" ,"camouflage" ,"campfire" ,"candle" ,"cannon" ,"canoe" ,"car" ,"carrot" ,"castle" ,"cat" ,"ceiling fan" ,"cell phone" ,"cello" ,"chair" ,"chandelier" ,"church" ,"circle" ,"clarinet" ,"clock" ,"cloud" ,"coffee cup" ,"compass" ,"computer" ,"cookie" ,"cooler" ,"couch" ,"cow" ,"crab" ,"crayon" ,"crocodile" ,"crown" ,"cruise ship" ,"cup" ,"diamond" ,"dishwasher" ,"diving board" ,"dog" ,"dolphin" ,"donut" ,"door" ,"dragon" ,"dresser" ,"drill" ,"drums" ,"duck" ,"dumbbell" ,"ear" ,"elbow" ,"elephant" ,"envelope" ,"eraser" ,"eye" ,"eyeglasses" ,"face" ,"fan" ,"feather" ,"fence" ,"finger" ,"fire hydrant" ,"fireplace" ,"firetruck" ,"fish" ,"flamingo" ,"flashlight" ,"flip flops" ,"floor lamp" ,"flower" ,"flying saucer" ,"foot" ,"fork" ,"frog" ,"frying pan" ,"garden hose" ,"garden" ,"giraffe" ,"goatee" ,"golf club" ,"grapes" ,"grass" ,"guitar" ,"hamburger" ,"hammer" ,"hand" ,"harp" ,"hat" ,"headphones" ,"hedgehog" ,"helicopter" ,"helmet" ,"hexagon" ,"hockey puck" ,"hockey stick" ,"horse" ,"hospital" ,"hot air balloon" ,"hot dog" ,"hot tub" ,"hourglass" ,"house plant" ,"house" ,"hurricane" ,"ice cream" ,"jacket" ,"jail" ,"kangaroo" ,"key" ,"keyboard" ,"knee" ,"knife" ,"ladder" ,"lantern" ,"laptop" ,"leaf" ,"leg" ,"light bulb" ,"lighter" ,"lighthouse" ,"lightning" ,"line" ,"lion" ,"lipstick" ,"lobster" ,"lollipop" ,"mailbox" ,"map" ,"marker" ,"matches" ,"megaphone" ,"mermaid" ,"microphone" ,"microwave" ,"monkey" ,"moon" ,"mosquito" ,"motorbike" ,"mountain" ,"mouse" ,"moustache" ,"mouth" ,"mug" ,"mushroom" ,"nail" ,"necklace" ,"nose" ,"ocean" ,"octagon" ,"octopus" ,"onion" ,"oven" ,"owl" ,"paint can" ,"paintbrush" ,"palm tree" ,"panda" ,"pants" ,"paper clip" ,"parachute" ,"parrot" ,"passport" ,"peanut" ,"pear" ,"peas" ,"pencil" ,"penguin" ,"piano" ,"pickup truck" ,"picture frame" ,"pig" ,"pillow" ,"pineapple" ,"pizza" ,"pliers" ,"police car" ,"pond" ,"pool" ,"popsicle" ,"postcard" ,"potato" ,"power outlet" ,"purse" ,"rabbit" ,"raccoon" ,"radio" ,"rain" ,"rainbow" ,"rake" ,"remote control" ,"rhinoceros" ,"rifle" ,"river" ,"roller coaster" ,"rollerskates" ,"sailboat" ,"sandwich" ,"saw" ,"saxophone" ,"school bus" ,"scissors" ,"scorpion" ,"screwdriver" ,"sea turtle" ,"see saw" ,"shark" ,"sheep" ,"shoe" ,"shorts" ,"shovel" ,"sink" ,"skateboard" ,"skull" ,"skyscraper" ,"sleeping bag" ,"smiley face" ,"snail" ,"snake" ,"snorkel" ,"snowflake" ,"snowman" ,"soccer ball" ,"sock" ,"speedboat" ,"spider" ,"spoon" ,"spreadsheet" ,"square" ,"squiggle" ,"squirrel" ,"stairs" ,"star" ,"steak" ,"stereo" ,"stethoscope" ,"stitches" ,"stop sign" ,"stove" ,"strawberry" ,"streetlight" ,"string bean" ,"submarine" ,"suitcase" ,"sun" ,"swan" ,"sweater" ,"swing set" ,"sword" ,"syringe" ,"t-shirt" ,"table" ,"teapot" ,"teddy-bear" ,"telephone" ,"television" ,"tennis racquet" ,"tent" ,"tiger" ,"toaster" ,"toe" ,"toilet" ,"tooth" ,"toothbrush" ,"toothpaste" ,"tornado" ,"tractor" ,"traffic light" ,"train" ,"tree" ,"triangle" ,"trombone" ,"truck" ,"trumpet" ,"umbrella" ,"underwear" ,"van" ,"vase" ,"violin" ,"washing machine" ,"watermelon" ,"waterslide" ,"whale" ,"wheel" ,"windmill" ,"wine bottle" ,"wine glass" ,"wristwatch" ,"yoga" ,"zebra" ,"zigzag" ]
+print(len(labellist))
 base = 'https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/'
 
 
@@ -44,7 +44,7 @@ def load_data(root, vfold_ratio=0.5, max_items_per_class= 5000 ):
                download=True
              elif(shoulddownload.lower()=="n"):
                 sys.exit("You canceled the training dataset download")
-            print("Downloading: "+base + i.replace(" ", "%20"))
+            print("Downloading: "+base + i.replace(" ", "%20")+".npy")
             urllib.request.urlretrieve(base + i.replace(" ", "%20") + '.npy', root+"/" + i + '.npy')
 
         data = np.load(file)
@@ -94,14 +94,14 @@ model.add(layers.Convolution2D(128, (3, 3), padding='same', activation= 'relu'))
 model.add(layers.MaxPooling2D(pool_size =(2,2)))
 model.add(layers.Flatten())
 model.add(layers.Dense(128, activation='relu'))
-model.add(layers.Dense(100, activation='softmax'))
+model.add(layers.Dense(len(labellist), activation='softmax'))
 # Train model
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'],)
 
 #fit the model
-model.fit(x_train, y_train, validation_split=0.1, batch_size = 128, verbose=2, epochs=5)
+model.fit(x_train, y_train, validation_split=0.1, batch_size = 384, verbose=2, epochs=20)
 tf.saved_model.save(model, "saved models/"+modelfilename)
 #evaluate on unseen data
 score = model.evaluate(x_test, y_test, verbose=0)
