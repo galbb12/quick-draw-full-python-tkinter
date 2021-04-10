@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 from PIL import EpsImagePlugin
 import tensorflow as tf
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import threading
 import random
 import time
@@ -80,6 +80,10 @@ class Paint(object):
 
         self.skip_button.grid(row=0, column=3)
 
+        #self.showimage_button = Button(self.root, text='show image', command=self.showimage, height=2, width=30)
+#
+        #self.showimage_button.grid(row=0, column=4)
+
         self.c = Canvas(self.root, bg='white', width=int(896 / scale), height=int(896 / scale))
         self.c.grid(row=2, columnspan=5)
         self.label1 = Label(self.root, text="", bg="white", height=int(1/scale), width=int(60/scale), font=("Courier", int(20/scale)))
@@ -104,7 +108,7 @@ class Paint(object):
 
     def pickword(self):
         global randomword
-        randomword = labellist[random.randint(0, len(labellist)-1)]
+        randomword = labellist[random.randint(0, len(labellist))]
         self.label2.configure(text="Draw: " + randomword)
         self.use_eraser()
 
@@ -160,14 +164,23 @@ class Paint(object):
             self.pickword()
             time.sleep(2)
 
-        # plt.figure()
-        # plt.imshow(imgA)
-        # plt.colorbar()
-        # plt.gray()
-        # plt.grid(False)
-        # plt.show()
 
         threading.Timer(0.25, lambda: self.save()).start()
+
+    def showimage(self):
+        self.c.postscript(file="drawnimage.eps")
+        img = Image.open("drawnimage.eps")
+        img = img.resize((28, 28))
+        img = PIL.ImageOps.invert(img)
+        img = img.convert('L')
+        img.save("image.png","PNG")
+        imgA = np.asarray(img)
+        imgA = imgA.reshape(28, 28, 1).astype('float32')
+        imgA /= 255.0
+        plt.imshow(imgA)
+        plt.gray()
+        plt.grid(False)
+        plt.show()
 
     def use_eraser(self):
         self.c.delete("all")
