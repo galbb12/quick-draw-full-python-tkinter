@@ -59,6 +59,7 @@ print(len(labellist))
 model = tf.keras.models.load_model("saved models/" + modelfilename)
 randomword = ""
 engine = pyttsx3.init()
+engine.setProperty('rate',145)
 scale = 0
 
 
@@ -156,7 +157,7 @@ class Paint(object):
 
         if not oldtext == text:
             self.label1.config(text=text)
-            engine.say(text.replace(",", " or "))
+            engine.say(text.replace(",", " or "),)
             engine.runAndWait()
             oldtext = text
         if (randomword in predictionlist):
