@@ -5,3 +5,5 @@ To download all the necessary packages please run the "install packages.bat" bat
 To play the game please run the "quick draw.py" python file.
 
 To train the model please run the "train.py" python file.
+
+This project was made by Gal Bareket.
