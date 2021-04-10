@@ -68,22 +68,23 @@ class Paint(object):
         global scale
 
         self.root = Tk()
+        self.root.title("Quick draw by: Gal Bareket")
         scale = 1080 / self.root.winfo_screenheight()
         print(scale)
 
-        self.eraser_button = Button(self.root, text='erase', command=self.use_eraser, height=2, width=30)
+        self.eraser_button = Button(self.root, text='erase', command=self.use_eraser, height=int(2/scale), width=int(30/scale))
 
         self.eraser_button.grid(row=0, column=1)
 
-        self.skip_button = Button(self.root, text='skip', command=self.pickword, height=2, width=30)
+        self.skip_button = Button(self.root, text='skip', command=self.pickword, height=int(2/scale), width=int(30/scale))
 
         self.skip_button.grid(row=0, column=3)
 
-        self.c = Canvas(self.root, bg='white', width=896 / scale, height=896 / scale)
+        self.c = Canvas(self.root, bg='white', width=int(896 / scale), height=int(896 / scale))
         self.c.grid(row=2, columnspan=5)
-        self.label1 = Label(self.root, text="", bg="white", height=1, width=60, font=("Courier", 20))
+        self.label1 = Label(self.root, text="", bg="white", height=int(1/scale), width=int(60/scale), font=("Courier", int(20/scale)))
         self.label1.grid(row=4, columnspan=5)
-        self.label2 = Label(self.root, text="", bg="white", height=1, width=25, font=("Courier", 15), anchor="w")
+        self.label2 = Label(self.root, text="", bg="white", height=int(1/scale), width=int(35/scale), font=("Courier", int(15/scale)), anchor="w")
         self.label2.grid(row=0, column=2)
 
         threading.Thread(target=lambda: self.save()).start()
@@ -103,7 +104,7 @@ class Paint(object):
 
     def pickword(self):
         global randomword
-        randomword = labellist[random.randint(0, len(labellist))]
+        randomword = labellist[random.randint(0, len(labellist)-1)]
         self.label2.configure(text="Draw: " + randomword)
         self.use_eraser()
 
